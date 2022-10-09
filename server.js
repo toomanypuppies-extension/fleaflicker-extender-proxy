@@ -26,7 +26,7 @@ app.use(
   createProxyMiddleware({
     target: 'https://statsapi.web.nhl.com/api/v1',
     changeOrigin: true,
-    pathRewrite: { '^/proxy/flea': '' },
+    pathRewrite: { '^/proxy/nhl': '' },
     logger: console
   })
 );
