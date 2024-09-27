@@ -30,6 +30,15 @@ app.use(
     logger: console
   })
 );
+app.use(
+  '/proxy/nhlv2',
+  createProxyMiddleware({
+    target: 'https://api-web.nhle.com/v1',
+    changeOrigin: true,
+    pathRewrite: { '^/proxy/nhlv2': '' },
+    logger: console
+  })
+);
 
 /**
  * Healthcheck
