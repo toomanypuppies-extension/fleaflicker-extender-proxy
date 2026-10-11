@@ -1,11 +1,11 @@
-const express = require('express');
-const cors = require('cors');
-const { createProxyMiddleware } = require('http-proxy-middleware');
+import express from 'express';
+import cors from 'cors';
+import { createProxyMiddleware } from 'http-proxy-middleware';
 
-const { SlidingWindowLimiter } = require('./flea/limiter');
-const { FairQueue } = require('./flea/fairQueue');
-const { ResponseCache } = require('./flea/cache');
-const { createFleaProxy } = require('./flea/proxy');
+import { SlidingWindowLimiter } from './flea/limiter.js';
+import { FairQueue } from './flea/fairQueue.js';
+import { ResponseCache } from './flea/cache.js';
+import { createFleaProxy } from './flea/proxy.js';
 
 const app = express();
 
@@ -42,7 +42,6 @@ app.use(
   createProxyMiddleware({
     target: 'https://statsapi.web.nhl.com/api/v1',
     changeOrigin: true,
-    pathRewrite: { '^/proxy/nhl': '' },
     logger: console
   })
 );
@@ -51,7 +50,6 @@ app.use(
   createProxyMiddleware({
     target: 'https://api-web.nhle.com/v1',
     changeOrigin: true,
-    pathRewrite: { '^/proxy/nhlv2': '' },
     logger: console
   })
 );
