@@ -1,4 +1,4 @@
-runtime: nodejs18
+runtime: nodejs24
 
 # The fleaflicker rate limiter and cache live in memory, so there must be exactly one instance
 # for them to see all traffic. Requests wait in the fair queue, so allow plenty of concurrency.
