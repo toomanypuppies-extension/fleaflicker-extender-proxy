@@ -38,14 +38,6 @@ app.get('/flea-stats', (req, res) => {
   res.json(fleaProxy.stats());
 });
 app.use(
-  '/proxy/nhl',
-  createProxyMiddleware({
-    target: 'https://statsapi.web.nhl.com/api/v1',
-    changeOrigin: true,
-    logger: console
-  })
-);
-app.use(
   '/proxy/nhlv2',
   createProxyMiddleware({
     target: 'https://api-web.nhle.com/v1',
