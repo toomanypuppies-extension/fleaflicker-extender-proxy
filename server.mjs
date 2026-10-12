@@ -6,6 +6,8 @@ import { SlidingWindowLimiter } from './flea/limiter.js';
 import { FairQueue } from './flea/fairQueue.js';
 import { ResponseCache } from './flea/cache.js';
 import { createFleaProxy } from './flea/proxy.js';
+import { createRulesHandler } from './flea/rulesRoute.js';
+import { createStartingGoaliesHandler } from './goalies/startingGoalies.js';
 
 const app = express();
 
@@ -27,13 +29,19 @@ const fleaLimiter = new SlidingWindowLimiter({
   windowMs: 60 * 1000,
   minIntervalMs: 250,
 });
+const fleaQueue = new FairQueue({ limiter: fleaLimiter, maxConcurrent: 4, maxQueuePerClient: 50 });
+const fleaCache = new ResponseCache({ maxBytes: 64 * 1024 * 1024 });
 const fleaProxy = createFleaProxy({
   upstream: 'https://www.fleaflicker.com/api',
   limiter: fleaLimiter,
-  queue: new FairQueue({ limiter: fleaLimiter, maxConcurrent: 4, maxQueuePerClient: 50 }),
-  cache: new ResponseCache({ maxBytes: 64 * 1024 * 1024 }),
+  queue: fleaQueue,
+  cache: fleaCache,
 });
 app.use('/proxy/flea', fleaProxy);
+// League settings the API doesn't return, from the league's rules page
+app.get('/proxy/flea-rules/:sport/:leagueId', createRulesHandler({ queue: fleaQueue, cache: fleaCache }));
+// A day's starting goalies from Daily Faceoff, which browsers can't fetch from other sites
+app.get('/proxy/starting-goalies/:date', createStartingGoaliesHandler({ cache: new ResponseCache({ maxBytes: 4 * 1024 * 1024 }) }));
 app.get('/flea-stats', (req, res) => {
   res.json(fleaProxy.stats());
 });

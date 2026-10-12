@@ -19,6 +19,14 @@ site shares this server's IP, so `/proxy/flea` doesn't pass requests straight th
 
 `GET /flea-stats` shows the current budget, queue, and cache.
 
+## League settings
+
+`GET /proxy/flea-rules/:sport/:leagueId` returns settings fleaflicker's API doesn't have, read
+from the league's rules page (`flea/rules.js`): the transaction limit and waiver timing (hours on
+waivers after a drop, whether free agents go on waivers at game start, and the Eastern times
+game-start waivers lock and first-come-first-served opens). Page fetches go through the same
+limiter and queue as `/proxy/flea` and are cached for a day.
+
 The limiter and cache are in memory, so `app.yaml` pins the app to a single instance.
 
 `yarn test` runs the tests.
